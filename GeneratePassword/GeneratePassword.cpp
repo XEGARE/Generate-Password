@@ -17,24 +17,33 @@ void GeneratePassword::clickedButton()
 	QString baseWord = ui.lineEdit_baseWord->text();
 	QString domain = ui.lineEdit_Domain->text();
 
-	static const int domainLen = domain.size();
-	
-	for (int i = 0; i <= domainLen; i++)
-		baseWord.remove(domain[i]);
+	if (baseWord.isEmpty() || domain.isEmpty())
+	{
+		ui.label_Information->setStyleSheet("color: #FF0000");
+		ui.label_Information->setText("***<br>YOU HABE FILLED OUT NOT ALL FIELDS!");
+	}
+	else
+	{
+		static const int domainLen = domain.size();
 
-	for (int i = baseWord.size()-1; i >= 0; i--)
-		baseWord += baseWord[i];
+		for (int i = 0; i <= domainLen; i++)
+			baseWord.remove(domain[i]);
 
-	QString generatedPass = 
-		QString::number(baseNumber + domainLen) + 
-		domain.right(1).toUpper() + 
-		baseWord + 
-		QString::number(domainLen);
-	
-	QClipboard* c = QApplication::clipboard();
+		for (int i = baseWord.size() - 1; i >= 0; i--)
+			baseWord += baseWord[i];
 
-	c->clear();
-	c->setText(generatedPass);
+		QString generatedPass =
+			QString::number(baseNumber + domainLen) +
+			domain.right(1).toUpper() +
+			baseWord +
+			QString::number(domainLen);
 
-	ui.label_Information->setText("***<br>YOUR PASSWORD HAS BEEN COPIED TO THE CLIPBOARD");
+		QClipboard * c = QApplication::clipboard();
+
+		c->clear();
+		c->setText(generatedPass);
+
+		ui.label_Information->setStyleSheet("color: #fff");
+		ui.label_Information->setText("***<br>YOUR PASSWORD HAS BEEN COPIED TO THE CLIPBOARD");
+	}
 }
