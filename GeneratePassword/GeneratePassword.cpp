@@ -20,7 +20,7 @@ void GeneratePassword::clickedButton()
 	if (baseWord.isEmpty() || domain.isEmpty())
 	{
 		ui.label_Information->setStyleSheet("color: #FF0000");
-		ui.label_Information->setText("***<br>YOU HABE FILLED OUT NOT ALL FIELDS!");
+		ui.label_Information->setText("***<br>YOU DID NOT FILL ALL FIELDS!");
 	}
 	else
 	{
