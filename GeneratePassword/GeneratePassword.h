@@ -1,18 +1,26 @@
-#pragma once
+#ifndef GENERATEPASSWORD_H
+#define GENERATEPASSWORD_H
 
-#include <QtWidgets/QMainWindow>
-#include "ui_GeneratePassword.h"
+#include <QMainWindow>
+#include <QClipboard>
+
+namespace Ui {
+class GeneratePassword;
+}
 
 class GeneratePassword : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	GeneratePassword(QWidget *parent = Q_NULLPTR);
-
-private slots:
-	void clickedButton();
+    explicit GeneratePassword(QWidget *parent = 0);
+    ~GeneratePassword();
 
 private:
-	Ui::GeneratePasswordClass ui;
+    Ui::GeneratePassword *ui;
+
+private slots:
+	void ClickedGeneratePassword();
 };
+
+#endif // GENERATEPASSWORD_H

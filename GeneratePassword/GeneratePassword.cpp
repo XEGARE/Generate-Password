@@ -1,49 +1,103 @@
-#include "stdafx.h"
-#include "GeneratePassword.h"
+#include "generatepassword.h"
+#include "ui_generatepassword.h"
 
-GeneratePassword::GeneratePassword(QWidget *parent)
-	: QMainWindow(parent)
+GeneratePassword::GeneratePassword(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::GeneratePassword)
 {
-	ui.setupUi(this);
+    ui->setupUi(this);
 
-	connect(ui.pushButton_Generate, SIGNAL(released()), this, SLOT(clickedButton()));
+	QRegExpValidator *numberValidator=new QRegExpValidator(QRegExp("^[0-9]+$"),this);
+	ui->secretNumberInput->setValidator(numberValidator);
 
-	ui.lineEdit_baseNumber->setValidator(new QIntValidator());
+	QObject::connect(ui->generatePasswordButton,&QPushButton::released,this,&GeneratePassword::ClickedGeneratePassword);
 }
 
-void GeneratePassword::clickedButton()
+GeneratePassword::~GeneratePassword()
 {
-	int baseNumber = ui.lineEdit_baseNumber->text().toInt();
-	QString baseWord = ui.lineEdit_baseWord->text();
-	QString domain = ui.lineEdit_Domain->text();
+    delete ui;
+}
 
-	if (baseWord.isEmpty() || domain.isEmpty())
+void GeneratePassword::ClickedGeneratePassword()
+{
+
+	if(ui->secretNumberInput->text().isEmpty())
 	{
-		ui.label_Information->setStyleSheet("color: #FF0000");
-		ui.label_Information->setText("***<br>YOU DID NOT FILL ALL FIELDS!");
+		ui->statusBar->showMessage("Secret number not entered",5000);
+		return;
 	}
-	else
+
+	if(ui->secretWordInput->text().isEmpty())
 	{
-		static const int domainLen = domain.size();
+		ui->statusBar->showMessage("Secret word not entered",5000);
+		return;
+	}
 
-		for (int i = 0; i <= domainLen; i++)
-			baseWord.remove(domain[i]);
+	if(ui->domainInput->text().isEmpty())
+	{
+		ui->statusBar->showMessage("Domain not entered",5000);
+		return;
+	}
 
-		for (int i = baseWord.size() - 1; i >= 0; i--)
-			baseWord += baseWord[i];
+	if(!ui->generateType1->isChecked() && !ui->generateType2->isChecked())
+	{
+		ui->statusBar->showMessage("Generate type not selected",5000);
+		return;
+	
+	}
 
-		QString generatedPass =
-			QString::number(baseNumber + domainLen) +
+	QString generatedPassword="";
+
+	int secretNumber=ui->secretNumberInput->text().toInt();
+	QString secretWord=ui->secretWordInput->text();
+	QString domain=ui->domainInput->text();
+
+	int domainLength=domain.length();
+
+	for(int i=0; i < domainLength; i++)
+		secretWord.remove(domain[i]);
+
+	if(ui->generateType1->isChecked())
+	{
+		int secretWordLength=secretWord.length()-1;
+
+		for(int i=secretWordLength; i >= 0; i--)
+			secretWord.append(secretWord[i]);
+
+		generatedPassword=
+			QString::number(secretNumber + domainLength) +
 			domain.right(1).toUpper() +
-			baseWord +
-			QString::number(domainLen);
+			secretWord +
+			QString::number(domainLength);
+	}
+	else if(ui->generateType2->isChecked())
+	{
+		int sum=secretNumber+domainLength;
 
-		QClipboard * c = QApplication::clipboard();
+		QString newSecretWord="";
+		int secretWordLength=secretWord.length();
 
+		for(int i=0; i < secretWordLength; i++)
+		{
+			newSecretWord.append(secretWord[i]);
+			newSecretWord.append(secretWord[secretWordLength-i-1]);
+		}
+
+		generatedPassword=
+			QString::number(sum) +
+			newSecretWord +
+			QString::number(int(sum/2)) +
+			domain.left(1).toUpper();
+	}
+
+	if(!generatedPassword.isEmpty())
+	{
+		QClipboard *c=QApplication::clipboard();
 		c->clear();
-		c->setText(generatedPass);
+		c->setText(generatedPassword);
 
-		ui.label_Information->setStyleSheet("color: #fff");
-		ui.label_Information->setText("***<br>YOUR PASSWORD HAS BEEN COPIED TO THE CLIPBOARD");
+		generatedPassword.clear();
+
+		ui->statusBar->showMessage("Your password has been copied to the clipboard",5000);
 	}
 }

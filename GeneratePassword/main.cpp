@@ -1,18 +1,11 @@
-#include "stdafx.h"
-#include "GeneratePassword.h"
-#include <QtWidgets/QApplication>
+#include "generatepassword.h"
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
-	GeneratePassword w;
+    QApplication a(argc, argv);
+    GeneratePassword w;
+    w.show();
 
-	w.setWindowTitle("Generate Password");
-	
-	w.setFont(QFont(":/GeneratePassword/Resources/Roboto-Regular.ttf"));
-	
-	w.setMinimumWidth(400);
-
-	w.show();
-	return a.exec();
+    return a.exec();
 }
