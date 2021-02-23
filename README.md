@@ -5,5 +5,4 @@ The application generates a password based on the entered data using the algorit
 
 ## Third-party
 
-* Qt 5.12 ([LGPL](http://doc.qt.io/qt-5/lgpl.html))
-* Roboto font ([Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html))
+* Qt 5.6+ ([LGPL](http://doc.qt.io/qt-5/lgpl.html))
